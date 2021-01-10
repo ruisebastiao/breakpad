@@ -38,12 +38,12 @@
 #include "common/windows/pdb_source_line_writer.h"
 #include "common/windows/pe_source_line_writer.h"
 
-using std::wstring;;
+using std::wstring;
 using google_breakpad::PDBSourceLineWriter;
 using google_breakpad::PESourceLineWriter;
 using std::unique_ptr;
 
-int wmain(int argc, wchar_t **argv) {
+int wmain(int argc, wchar_t** argv) {
   bool success;
   if (argc == 2) {
     PDBSourceLineWriter pdb_writer;

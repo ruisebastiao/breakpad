@@ -143,10 +143,6 @@ bool ReadModuleInfo(const wstring & pe_file, PDBModuleInfo * info) {
 
   PIMAGE_OPTIONAL_HEADER64 optional_header =
       &(reinterpret_cast<PIMAGE_NT_HEADERS64>(img->FileHeader))->OptionalHeader;
-  if (optional_header->Magic != IMAGE_NT_OPTIONAL_HDR64_MAGIC) {
-    fprintf(stderr, "Not a PE32+ image\n");
-    return false;
-  }
 
   // Search debug directories for a guid signature & age
   DWORD debug_rva = optional_header->
@@ -289,7 +285,7 @@ bool PrintPEFrameData(const wstring & pe_file, FILE * out_file)
       unwind_rva = chained_func->UnwindInfoAddress;
     }
 
-    UnwindInfo *unwind_info = static_cast<UnwindInfo *>(
+    UnwindInfo *unwind_info = static_cast<UnwindInfo*>(
       ImageRvaToVa(img->FileHeader,
         img->MappedAddress,
         unwind_rva,
@@ -355,7 +351,7 @@ bool PrintPEFrameData(const wstring & pe_file, FILE * out_file)
           (unwind_info->unwind_code +
             ((unwind_info->count_of_codes + 1) & ~1)));
 
-        unwind_info = static_cast<UnwindInfo *>(
+        unwind_info = static_cast<UnwindInfo*>(
           ImageRvaToVa(img->FileHeader,
             img->MappedAddress,
             chained_func->UnwindInfoAddress,
@@ -406,27 +402,6 @@ wstring GenerateDebugIdentifier(DWORD age, DWORD signature)
     sizeof(identifier_string[0]) - 1] = L'\0';
 
   return wstring(identifier_string);
-}
-
-constexpr const wchar_t* FileHeaderMachineToCpuString(WORD machine)
-{
-  {
-    switch (machine) {
-      case IMAGE_FILE_MACHINE_I386:
-      {
-        return L"x86";
-      }
-      case IMAGE_FILE_MACHINE_IA64:
-      case IMAGE_FILE_MACHINE_AMD64:
-      {
-        return L"x86_64";
-      }
-      default:
-      {
-        return L"unknown";
-      }
-    }
-  }
 }
 
 }  // namespace google_breakpad
